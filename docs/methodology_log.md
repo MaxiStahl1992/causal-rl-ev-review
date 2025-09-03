@@ -1,53 +1,56 @@
-**Date:** 22 August 2025
-**Subject:** Foundational Methodology for AI-Driven Literature Review
+# 28.08.2025
 
-Traditional Systematic Literature Reviews (SLRs) are often labor-intensive, time-consuming, and prone to error, particularly in rapidly evolving research fields[cite: 968, 2733]. Recent studies highlight significant gaps in the automation of critical phases such as data extraction, quality assessment, and data synthesis[cite: 2709, 2944, 3001, 3006]. To address these challenges, this study adopts a semi-automated pipeline that leverages Large Language Models (LLMs) and advanced Natural Language Processing (NLP) to enhance the efficiency and rigor of the review process[cite: 182, 969].
-Our approach is directly informed by recently proposed frameworks like PROMPTHEUS, which demonstrate the feasibility of an end-to-end automated SLR pipeline[cite: 994, 995, 1131]. The methodology consists of three main stages. First, a **systematic search and screening** phase will use an LLM to generate a robust search query and Sentence-BERT embeddings to filter for the most relevant papers based on semantic similarity[cite: 1131, 1142, 1181]. Second, a **data extraction and topic modeling** phase will employ the BERTopic algorithm to cluster the selected literature into coherent themes[cite: 214, 1001, 1202]. This technique leverages UMAP for dimensionality reduction and HDBSCAN for clustering, providing a robust method for thematic analysis[cite: 344, 345, 386]. Finally, we will construct and analyze a **knowledge graph** to map the relationships between concepts, papers, and authors, providing a structural overview of the research landscape[cite: 1717, 2277]. This comprehensive, AI-assisted methodology aims to produce a systematic and data-driven analysis while significantly reducing the manual workload associated with traditional review methods[cite: 970].
+## Graph-Based Bibliometric Methodology
 
----
+### Rationale
+To systematically map and analyze the literature relevant to *Causal Reinforcement Learning for Smart Charging*, we adopt a **graph-based bibliometric approach**. Instead of pre-clustering papers outside of a graph environment, the literature is represented as a **heterogeneous knowledge graph**, enabling scalable analytics using Neo4j’s Graph Data Science library.
 
-**Date:** 25 August 2025
-**Subject:** Refined Plan for Analysis Phase: Topic Modeling and Knowledge Graph
+This approach is grounded in best practices from bibliometric research. Empirical comparisons have shown that **direct citation networks** outperform co-citation or bibliographic coupling when the goal is to represent the research front accurately (Boyack & Klavans, 2010; Waltman & van Eck, 2012). Recent surveys further highlight the benefits of graph-based methods for scientific mapping and community detection (Chen et al., 2022).  
 
-With a clean corpus of 1,652 unique papers established, the project now moves into the analysis phase. This phase will be executed in two main stages: (1) Topic Modeling to identify thematic clusters, and (2) Knowledge Graph construction to map the relationships within the research landscape.
+### Data Acquisition
+- **Primary source**: Semantic Scholar Graph API, providing:
+  - Core metadata (paperId, title, abstract, year, venue, fieldsOfStudy, doi, citation/reference counts).
+  - References and citations (to build citation edges).
+  - Author identifiers and names.
+- **Fallback sources**:
+  - OpenAlex (for missing DOIs, enriched metadata).
+  - CrossRef (for venue normalization).
 
-### Stage 1: Topic Modeling (03_topic_modeling.ipynb)
-The primary objective of this stage is to automatically discover and label the core research themes present in the master_corpus.csv.
+This ensures a **comprehensive and enriched dataset** suitable for graph construction.
 
-Algorithm: We will use the BERTopic algorithm, which leverages transformer embeddings for semantic understanding and HDBSCAN for clustering.
+### Graph Schema
 
-Number of Topics: A key advantage of this approach is that we do not need to pre-define the number of topics. BERTopic's use of HDBSCAN will automatically determine the optimal number of clusters based on the data's density, ensuring a data-driven result.
+**Nodes**
+- `Paper {id, title, abstract, year, doi, venue, fieldsOfStudy, citationCount, referenceCount}`
+- `Author {id, name}` (optional, for co-authorship networks).
+- `Venue {name, type}` (optional, for publication context).
+- `Concept {name}` (optional, for extracted keywords or entities).
 
-Output: The process will yield a new DataFrame where each paper from our corpus is assigned a topic_id and a descriptive topic_name. This topic-enriched dataset will be the primary input for the knowledge graph.
+**Edges**
+- `(:Paper)-[:CITES]->(:Paper)`  
+  Directed citation relationships between papers (backbone of the graph).
+- `(:Paper)-[:SIMILAR_TO {score:float}]->(:Paper)`  
+  Weighted semantic similarity edges, based on TF-IDF or embeddings. Useful for **recent papers** that lack citation links.
+- `(:Author)-[:COAUTHORED]->(:Paper)`  
+- `(:Paper)-[:PUBLISHED_IN]->(:Venue)`  
+- `(:Paper)-[:MENTIONS]->(:Concept)`  
 
-### Stage 2: Knowledge Graph Construction and Analysis (04_knowledge_graph_analysis.ipynb)
-The goal of this stage is to model our dataset as a rich network to uncover deeper structural insights.
+In practice, the **minimum viable graph** will consist of **Paper nodes** connected by `CITES` and `SIMILAR_TO` edges, with optional enrichment as needed.
 
-Technology: We will use a Neo4j graph database.
+### Analytical Framework (Neo4j GDS)
 
-Schema: The graph will be structured with three types of nodes (Paper, Author, Topic) and two primary relationships (AUTHORED, BELONGS_TO). This model will allow for complex, multi-dimensional queries.
+Once loaded into Neo4j, the graph can be analyzed using the **Graph Data Science (GDS) library**, which supports:
 
-Analysis: We will query the graph to answer an expanded set of analytical questions, including identifying influential authors and papers within specific topics, mapping collaboration networks, and discovering authors who act as bridges between different research themes. This will provide the data-driven narrative for the final research essay.
+- **Community detection**: Louvain, Leiden, weakly/strongly connected components.
+- **Centrality analysis**: PageRank, Eigenvector, Harmonic, Degree centrality to identify influential works.
+- **Similarity analysis**: `gds.nodeSimilarity` or embedding-based KNN to cluster related papers.
+- **Link prediction**: Adamic-Adar, common neighbors, preferential attachment to infer potential emerging connections.
 
----
-**Date** 26 August 2025
-**Subject** Methodology Update: From Embedding-Only to Citation-Anchored Clustering
+This hybrid design ensures that both **established literature** (well-cited) and **emerging works** (citation-poor but semantically relevant) are captured.
 
-**Summary**
-We’re shifting from pure embedding-based topic modeling toward a citation-anchored clustering approach. This method anchors clusters in the scholarly network—more stable, interpretable, and grounded in how researchers actually structure knowledge.
-	1.	Construct a Citation Graph
-Each research paper becomes a node; directed or undirected edges represent citation links, capturing the academic field’s intellectual structure (Šubelj, van Eck, & Waltman, 2015; Klavans & Boyack, 2015).
-	2.	Apply the Leiden Algorithm for Community Detection
-We use the Leiden algorithm (Traag, Waltman, & van Eck, 2019), which outperforms Louvain by guaranteeing that each community is internally connected, converging to locally optimal partitions and doing so faster (Traag et al., 2019).
-	3.	Why This Beats Topic-Only Clustering
-Head-to-head evaluations show that citation-based clustering (CC) more faithfully captures scientific micro-communities, whereas topic modeling (TM) may obscure them due to thematic overlap (Xie & Waltman, 2023).
-	4.	Labeling Communities with Text + Entities
-After detecting communities, we generate human-readable labels using class-based TF-IDF on titles and abstracts (as in BERTopic methodology), enhanced with domain-specific entities (e.g., causal inference terms, grid vocabulary) via scientific NER.
+### References
+- Boyack, K. W., & Klavans, R. (2010). Co-citation analysis, bibliographic coupling, and direct citation: Which citation approach represents the research front most accurately? *Journal of the American Society for Information Science and Technology, 61*(12), 2389–2404. https://doi.org/10.1002/asi.21419  
 
-**References (APA Style)**
-	•	Klavans, R., & Boyack, K. W. (2015). Which type of citation analysis generates the most accurate taxonomy of scientific and technical knowledge? arXiv. https://doi.org/10.48550/arXiv.1511.05078
-	•	Šubelj, L., van Eck, N. J., & Waltman, L. (2015). Clustering scientific publications based on citation relations: A systematic comparison of different methods. arXiv. https://doi.org/10.48550/arXiv.1512.09023
-	•	Traag, V. A., Waltman, L., & van Eck, N. J. (2019). From Louvain to Leiden: Guaranteeing well-connected communities. Scientific Reports. https://doi.org/10.1038/s41598-019-41695-z
-	•	Xie, Q., & Waltman, L. (2023). A comparison of citation-based clustering and topic modeling for science mapping. ArXiv. https://doi.org/10.48550/arXiv.2309.06160
+- Waltman, L., & van Eck, N. J. (2012). A new methodology for constructing a publication-level classification system of science. *Journal of the American Society for Information Science and Technology, 63*(12), 2378–2392. https://doi.org/10.1002/asi.22748  
 
-⸻
+- Chen, C., Song, M., & Heo, G. (2022). Graph-based bibliometric analysis: Methods and applications. *Scientometrics, 127*(6), 3699–3723. https://doi.org/10.1007/s11192-022-04345-6  
