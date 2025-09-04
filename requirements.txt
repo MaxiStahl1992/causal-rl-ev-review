@@ -46,6 +46,7 @@ Jinja2==3.1.6
 joblib==1.5.1
 json5==0.12.1
 jsonpatch==1.33
+jsonpickle==4.1.1
 jsonpointer==3.0.0
 jsonschema==4.25.1
 jsonschema-specifications==2025.4.1
@@ -97,6 +98,7 @@ prompt_toolkit==3.0.51
 psutil==7.0.0
 ptyprocess==0.7.0
 pure_eval==0.2.3
+pyalex==0.18
 pycparser==2.22
 pydantic==2.11.7
 pydantic_core==2.33.2
@@ -107,6 +109,7 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.1.1
 python-json-logger==3.3.0
 pytz==2025.2
+pyvis==0.3.2
 PyYAML==6.0.2
 pyzmq==27.0.2
 referencing==0.36.2
