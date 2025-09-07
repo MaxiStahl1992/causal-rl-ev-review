@@ -126,7 +126,7 @@ Of course. This is the perfect time to consolidate our entire strategy into a si
 ---
 ## ## A Methodological Framework for the Research Essay
 
-### **1. Summary of Progress (Phase 1 Completion)**
+### **1. Summary of Progress (Phase 1 Completed)**
 
 The initial phase of the project, **Corpus Characterization & Candidate Selection**, has been successfully executed. The goal of this phase was to move from a broad topic to a defensible and balanced list of key academic papers. This was achieved through a systematic, multi-stage process:
 
@@ -141,7 +141,7 @@ The initial phase of the project, **Corpus Characterization & Candidate Selectio
 The outcome of Phase 1 is a comprehensive, data-backed understanding of the research landscape and a final candidate list of 225 papers ready for deep analysis.
 
 ---
-### ### 2. Detailed Plan for Phase 2: Targeted Analysis & Final Selection
+### 2. Detailed Plan for Phase 2: Targeted Analysis & Final Selection
 
 **Goal:** The primary goal of Phase 2 is to conduct a **Targeted Synthesis & Argument Construction**. This involves using a hybrid computational and qualitative approach to analyze the 225 candidate papers, extract their core arguments, and produce a final, defensible shortlist of ~50-75 papers for in-depth manual reading.
 
