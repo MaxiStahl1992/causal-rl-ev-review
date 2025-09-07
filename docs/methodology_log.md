@@ -199,3 +199,32 @@ The outcome of Phase 1 is a comprehensive, data-backed understanding of the rese
 * Torres, J., Mulligan, C., Jorge, J., & Moreira, C. (2025). PROMPTHEUS: A Human-Centered Pipeline to Streamline Systematic Literature Reviews with Large Language Models. *Information, 16*(5), 420. [https://doi.org/10.3390/info16050420](https://doi.org/10.3390/info16050420)
 
 ---
+
+### **Methodology Log Update**
+
+#### **Phase 1: Corpus Characterization & Candidate Selection (Completed)**
+
+1.  **Data Collection & Modeling:** A corpus of over 2,000 papers was collected from academic APIs and modeled into a Neo4j knowledge graph.
+2.  **Bibliometric Analysis:** The graph was analyzed to map the research landscape, identifying influential papers, authors, and trends.
+3.  **Candidate Selection:** A "Three-Bucket" strategy was employed to select an initial list of 225 candidate papers, balancing foundational, emerging, and pre-publication research.
+
+---
+
+#### **Phase 2: Targeted Analysis & Final Selection (Completed)**
+
+1.  **Data Enrichment:** The 225 candidate papers were enriched with their full abstracts queried from the Neo4j database.
+2.  **LLM-Powered Analysis:** Google's Gemini 2.5 Pro model was used to programmatically analyze the abstracts of all 225 papers.
+    * **Thematic Scoring:** Each paper was scored for its relevance to three predefined pillars: **CRL Methods**, **EV Applications**, and **Explainability & Trust**.
+    * **Structured Extraction:** The primary **Methodology** and a one-sentence **Contribution** were extracted from each abstract.
+3.  **Curated Reading List Selection:** A multi-step, portfolio-based strategy was used to select the final reading list of 75 papers.
+    * **Candidate Pooling:** Papers were grouped into distinct pools ("Triple Threats," "Dual Threats," "Pillar Champions," "Review Papers").
+    * **Methodology Balancing:** To ensure diversity and avoid a monoculture of "Algorithm Development" papers, the selection was capped to ensure representation from other methodologies like "Review/Survey" and "Empirical/Application."
+    * **Final Selection:** The final list was selected from the combined pools, using a `priority_score` (combining `foundational_score` and `citation_velocity`) to ensure a balance of both established and high-impact recent work.
+4.  **Validation:** The final list was analyzed and visualized to confirm its temporal and methodological balance, ensuring a robust and defensible selection.
+
+---
+
+#### **Phase 3: Qualitative Synthesis & Essay Composition (Initiated)**
+
+1.  **Framework Creation:** A new notebook (`07_qualitative_synthesis.ipynb`) was created.
+2.  **Analysis Sheet Generation:** A structured CSV file, `qualitative_analysis_sheet.csv`, was programmatically generated. This sheet contains the final 75 papers and a comprehensive set of targeted questions to guide the deep reading process. The "Key Contribution" column has been pre-populated with the LLM's analysis to serve as a starting point.
